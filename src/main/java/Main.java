@@ -1,33 +1,23 @@
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.block.BlockBorder;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.chart.ui.ApplicationFrame;
 import org.jfree.chart.ui.HorizontalAlignment;
 import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
-//import org.jfree.ui.RefineryUtilities;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 public class Main extends ApplicationFrame {
-//    public Main() {
-//
-//        initUI();
-//    }
 
     public Main(String title) {
         super(title);
@@ -37,20 +27,11 @@ public class Main extends ApplicationFrame {
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new Dimension(500, 270));
         setContentPane(chartPanel);
-        //chartPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-        //chartPanel.setBackground(Color.white);
-
-//        add(chartPanel);
-//
-//        pack();
-//        setTitle("Line chart");
-//        setLocationRelativeTo(null);
-//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
         private static CategoryDataset createDataset() {
 
-            String path = "src/main/resources/Plot.csv";
+            String path = "src/main/resources/Charts/SID0003572.csv";
             String line = "";
             DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
@@ -59,8 +40,6 @@ public class Main extends ApplicationFrame {
                 while ((line = br.readLine()) != null){
                     String[] values = line.split(";");
                     dataset.addValue(Integer.valueOf(values[1]), "Classes", values[0]);
-                    //dataset.addValue(512, "Classes", "qwer");
-                    //return dataset;
                 }
                // br.close();
             } catch (FileNotFoundException e){
@@ -77,9 +56,9 @@ public class Main extends ApplicationFrame {
         private static JFreeChart createChart(CategoryDataset dataset) {
 
             JFreeChart chart = ChartFactory.createLineChart(
-                    "Java Standard Class Library",
-                    null,
-                    "Class Count",
+                    "/gateway/services/SID0003572/1.00",
+                    "Продолжительность теста",
+                    "Запросов в минуту",
                     dataset,
                     PlotOrientation.VERTICAL,
                     false,
@@ -88,8 +67,7 @@ public class Main extends ApplicationFrame {
             );
             //chart.addSubtitle(new TextTitle("Number of Classes By Release"));
             TextTitle source = new TextTitle(
-                    "Source: Java IN A  Nutshell (4th edition) "
-                    + "by David Flanagan"
+                    "График интенсивности"
             );
             source.setFont(new Font("SansSerif", Font.PLAIN, 1));
             source.setPosition(RectangleEdge.BOTTOM);
@@ -102,6 +80,7 @@ public class Main extends ApplicationFrame {
             plot.setBackgroundPaint(Color.lightGray);
             plot.setRangeGridlinePaint(Color.white);
 
+
             NumberAxis rangeAxis = (NumberAxis)  plot.getRangeAxis();
             rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
@@ -112,6 +91,12 @@ public class Main extends ApplicationFrame {
             renderer.setUseFillPaint(true);
             renderer.setDefaultFillPaint(Color.white);
 
+            try {
+                ChartUtils.saveChartAsPNG(new File("src/main/resources/Images/SID0003572.png"),
+                        chart, 500, 270);
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
             return chart;
         }
 
