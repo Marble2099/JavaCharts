@@ -31,15 +31,19 @@ public class Main extends ApplicationFrame {
 
         private static CategoryDataset createDataset() {
 
-            String path = "src/main/resources/Charts/SID0003572.csv";
+            String path = "src/main/resources/Charts/200-500.csv";
             String line = "";
+            String series1 = "500";
+            String series2 = "200";
             DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
             try (BufferedReader br = new BufferedReader(new FileReader(path))){
 
                 while ((line = br.readLine()) != null){
                     String[] values = line.split(";");
-                    dataset.addValue(Integer.valueOf(values[1]), "Classes", values[0]);
+                    //System.out.println(values[3]);
+                    dataset.addValue(Integer.valueOf(values[1]), series1, values[0]);
+                    dataset.addValue(Integer.valueOf(values[3]), series2, values[2]);
                 }
                // br.close();
             } catch (FileNotFoundException e){
@@ -56,12 +60,12 @@ public class Main extends ApplicationFrame {
         private static JFreeChart createChart(CategoryDataset dataset) {
 
             JFreeChart chart = ChartFactory.createLineChart(
-                    "/gateway/services/SID0003572/1.00",
+                    "График интенсивности успешных и неуспешных запросов",
                     "Продолжительность теста",
                     "Запросов в минуту",
                     dataset,
                     PlotOrientation.VERTICAL,
-                    false,
+                    true,
                     true,
                     false
             );
@@ -91,8 +95,11 @@ public class Main extends ApplicationFrame {
             renderer.setUseFillPaint(true);
             renderer.setDefaultFillPaint(Color.white);
 
+//            renderer.setSeriesPaint(0, Color.red);
+//            renderer.setSeriesPaint(1, Color.blue);
+
             try {
-                ChartUtils.saveChartAsPNG(new File("src/main/resources/Images/SID0003572.png"),
+                ChartUtils.saveChartAsPNG(new File("src/main/resources/Images/Other.png"),
                         chart, 500, 270);
             }catch (IOException e) {
                 e.printStackTrace();
